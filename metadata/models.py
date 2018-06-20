@@ -93,8 +93,12 @@ class Household(models.Model):
                                  default=None, blank=True, null=True,
                                  on_delete=models.SET_NULL)
 
-    land_size = models.IntegerField(default=None, blank=True, null=True)
+    land_size = models.FloatField(default=None, blank=True, null=True)
     eligibility_source = models.CharField(max_length=256, blank=True)
+
+    eligibility = models.CharField(max_length=256, blank=True)
+    application = models.CharField(max_length=256, blank=True)
+    result = models.CharField(max_length=256, blank=True)
 
     total_male = models.IntegerField(default=None, blank=True, null=True)
     total_female = models.IntegerField(default=None, blank=True, null=True)

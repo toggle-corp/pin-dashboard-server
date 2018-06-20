@@ -1,3 +1,13 @@
-# from django.contrib import admin
+from django.contrib import admin
+from .models import (
+    District, Gaupalika, Place, Ward, GeoPoint,
+    GeoSite, Household,
+)
 
-# Register your models here.
+[
+    admin.site.register(Model) for Model in
+    [
+        District, Gaupalika, Place, Ward, GeoPoint,
+        GeoSite, Household,
+    ]
+]
