@@ -15,5 +15,6 @@ router.register(r'maps', MapViewSet)
 urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/metadata/', MetadataView.as_view()),
+    path('api/v1/metadata/<str:district>/', MetadataView.as_view()),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,10 +3,10 @@ from rest_framework import (
     views,
     response,
 )
-from .serializers import CountrySerializer
+from .serializers import CountrySerializer, DistrictDetailSerializer
 from .models import (
     GeoSite, Household,
-    District,
+    District, Gaupalika,
 )
 
 
@@ -23,12 +23,16 @@ class Metadata:
     # We have not used get_xxx naming specification below
     # so that these attributes will be directly mapped with the serializer
     # fields.
-    def __init__(self, district=None):
-        self.district = district and district.code
+    def __init__(self, district=None, gaupalika=None):
+        self.district = district
+        self.gaupalika = gaupalika
         self.gs = GeoSite.objects
         self.hh = Household.objects
 
-        if self.district:
+        if self.gaupalika:
+            self.gs = self.gs.filter(gaupalika=gaupalika)
+            self.hh = self.hh.filter(gaupalika=gaupalika)
+        elif self.district:
             self.gs = self.gs.filter(district=district)
             self.hh = self.hh.filter(district=district)
 
@@ -88,12 +92,24 @@ class Metadata:
             Metadata(district) for district in District.objects.all()
         ]
 
+    def gaupalikas(self):
+        return [
+            Metadata(None, gaupalika)
+            for gaupalika
+            in Gaupalika.objects.filter(district=self.district)
+        ]
+
     def total_households(self):
         return self.hh.count()
 
 
 class MetadataView(views.APIView):
-    def get(self, request):
-        metadata = Metadata()
-        serializer = CountrySerializer(metadata)
+    def get(self, request, district=None):
+        if district:
+            district = District.objects.get(code__iexact=district)
+            metadata = Metadata(district)
+            serializer = DistrictDetailSerializer(metadata)
+        else:
+            metadata = Metadata()
+            serializer = CountrySerializer(metadata)
         return response.Response(serializer.data)

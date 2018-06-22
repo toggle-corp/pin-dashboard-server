@@ -14,8 +14,20 @@ class BaseMetadataSerializer(serializers.Serializer):
     total_households = serializers.IntegerField()
 
 
-class DistrictSerializer(BaseMetadataSerializer):
+class GaupalikaSerializer(BaseMetadataSerializer):
+    gaupalika = serializers.CharField(source='gaupalika.code')
+
+
+class DistrictDetailSerializer(BaseMetadataSerializer):
     district = serializers.CharField()
+    gaupalikas = ListToDictField(
+        child=GaupalikaSerializer(many=True),
+        key='gaupalika',
+    )
+
+
+class DistrictSerializer(BaseMetadataSerializer):
+    district = serializers.CharField(source='district.code')
 
 
 class CountrySerializer(BaseMetadataSerializer):
