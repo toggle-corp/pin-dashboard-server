@@ -125,6 +125,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
     ),
 
+    'EXCEPTION_HANDLER': 'dashboard.exception_handler.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10000,

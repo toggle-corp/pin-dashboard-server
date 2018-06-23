@@ -1,4 +1,6 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
+
 from rest_framework import (
     views,
     response,
@@ -106,7 +108,7 @@ class Metadata:
 class MetadataView(views.APIView):
     def get(self, request, district=None):
         if district:
-            district = District.objects.get(code__iexact=district)
+            district = get_object_or_404(District, code__iexact=district)
             metadata = Metadata(district)
             serializer = DistrictDetailSerializer(metadata)
         else:
