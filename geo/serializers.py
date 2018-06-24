@@ -15,4 +15,4 @@ class MapSerializer(serializers.ModelSerializer):
         if not map.file:
             return
 
-        return json.loads(map.file.read())
+        return json.loads(map.file.read().decode('utf-8'))
