@@ -35,16 +35,11 @@ class Ward(models.Model):
         return self.name
 
 
-class GeoPoint(models.Model):
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-
-    def __str__(self):
-        return '({}, {})'.format(self.latitude, self.longitude)
-
-
 class GeoSite(models.Model):
     code = models.CharField(max_length=128, unique=True)
+
+    latitude = models.FloatField(default=None, blank=True, null=True)
+    longitude = models.FloatField(default=None, blank=True, null=True)
 
     district = models.ForeignKey(District,
                                  default=None, blank=True, null=True,
@@ -91,9 +86,6 @@ class Household(models.Model):
     ward = models.ForeignKey(Ward,
                              default=None, blank=True, null=True,
                              on_delete=models.SET_NULL)
-    geopoint = models.ForeignKey(GeoPoint,
-                                 default=None, blank=True, null=True,
-                                 on_delete=models.SET_NULL)
 
     land_size = models.FloatField(default=None, blank=True, null=True)
     eligibility_source = models.CharField(max_length=256, blank=True)
