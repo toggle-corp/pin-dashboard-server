@@ -61,7 +61,7 @@ class GeoSite(models.Model):
 
     category = models.CharField(max_length=256, blank=True)
     risk_rating = models.CharField(max_length=256, blank=True)
-    high_risk_ok = models.CharField(max_length=256, blank=True)
+    high_risk_of = models.CharField(max_length=256, blank=True)
     direct_risk_for = models.CharField(max_length=256, blank=True)
     potential_impact = models.CharField(max_length=256, blank=True)
     probability_of_risk = models.CharField(max_length=256, blank=True)
