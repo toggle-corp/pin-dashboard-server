@@ -97,8 +97,8 @@ class Command(BaseCommand):
         try:
             gaupalika = geo_site.gaupalika
             pt = get_random_point(json.loads(gaupalika.geojson))
-            gaupalika.longitude = pt.x
-            gaupalika.latitude = pt.y
+            geo_site.longitude = pt.x
+            geo_site.latitude = pt.y
         except Exception:
             pass
 

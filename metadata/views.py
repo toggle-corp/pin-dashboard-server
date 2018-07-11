@@ -21,6 +21,43 @@ def get_counts(qs):
     }
 
 
+class CatPoint:
+    def __init__(self, geosite):
+        self.geosite = geosite
+        self.latitude = geosite.latitude
+        self.longitude = geosite.longitude
+
+        self.landslide_code = geosite.code
+        self.landslide_cat = geosite.category
+        self.gp_name = geosite.gaupalika.name
+
+        self.households = geosite.household_set.all()
+        self.hh_affected = self.households.count()
+        self.risk_rating = geosite.risk_rating
+        self.high_risk_of = geosite.high_risk_of
+        self.direct_risk_for = geosite.direct_risk_for
+        self.potential_impact = geosite.potential_impact
+        self.risk_probability = geosite.probability_of_risk
+
+
+class Cat2Point(CatPoint):
+    def __init__(self, geosite):
+        super().__init__(geosite)
+        self.mitigation_work_status = geosite.status
+        self.mitigation_work_by = geosite.mitigation_work_by
+
+
+class Cat3Point(CatPoint):
+    def __init__(self, geosite):
+        super().__init__(geosite)
+        self.eligible_households = self.households\
+            .filter(eligibility='Yes').count()
+        self.households_applied = self.households\
+            .filter(application='Applied').count()
+        self.households_relocated = self.households\
+            .filter(result='Relocated').count()
+
+
 class Metadata:
     # We have not used get_xxx naming specification below
     # so that these attributes will be directly mapped with the serializer
@@ -103,6 +140,22 @@ class Metadata:
 
     def total_households(self):
         return self.hh.count()
+
+    def cat2_points(self):
+        return [
+            Cat2Point(gs)
+            for gs
+            in GeoSite.objects.filter(gaupalika=self.gaupalika,
+                                      category__iexact='cat2')
+        ]
+
+    def cat3_points(self):
+        return [
+            Cat3Point(gs)
+            for gs
+            in GeoSite.objects.filter(gaupalika=self.gaupalika,
+                                      category__iexact='cat3')
+        ]
 
 
 class MetadataView(views.APIView):
