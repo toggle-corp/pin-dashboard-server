@@ -19,10 +19,11 @@ class Command(BaseCommand):
         geometries = topojson['objects'][map.default_object]['geometries']
         for geometry in geometries:
             properties = geometry['properties']
+            code = properties['district']
             name = properties['district'].capitalize()
 
             District.objects.update_or_create(
-                code=name,
+                code=code,
                 defaults={'name': name},
             )
 
