@@ -6,3 +6,4 @@ drf-dynamic-fields==0.2.0
 psycopg2
 pyjwt==1.5.3
 requests==2.13.0
+shapely==1.6.4

@@ -1,14 +1,19 @@
 from django.core.management.base import BaseCommand
 from geo.models import Map
 from metadata.models import District, Gaupalika
+import utils.topojson
 
 import json
 
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
+        print('Loading districts')
         self.load_districts()
+        print('Done')
+        print('Loading gaupalikas')
         self.load_gaupalikas()
+        print('Done')
 
     def load_districts(self):
         map = Map.objects.filter(key='districts').first()
@@ -16,7 +21,11 @@ class Command(BaseCommand):
             return
 
         topojson = json.loads(map.file.read().decode('utf-8'))
+        scale = topojson['transform']['scale']
+        trans = topojson['transform']['translate']
+        arcs = topojson['arcs']
         geometries = topojson['objects'][map.default_object]['geometries']
+
         for geometry in geometries:
             properties = geometry['properties']
             code = properties['district']
@@ -24,7 +33,12 @@ class Command(BaseCommand):
 
             District.objects.update_or_create(
                 code=code,
-                defaults={'name': name},
+                defaults={
+                    'name': name,
+                    'geojson': utils.topojson.geometry(
+                        geometry, arcs, scale, trans
+                    ),
+                },
             )
 
     def load_gaupalikas(self):
@@ -33,7 +47,11 @@ class Command(BaseCommand):
             return
 
         topojson = json.loads(map.file.read().decode('utf-8'))
+        scale = topojson['transform']['scale']
+        trans = topojson['transform']['translate']
+        arcs = topojson['arcs']
         geometries = topojson['objects'][map.default_object]['geometries']
+
         for geometry in geometries:
             properties = geometry['properties']
             name = properties['NAME']
@@ -56,5 +74,8 @@ class Command(BaseCommand):
                 defaults={
                     'name': name,
                     'district': district,
+                    'geojson': json.dumps(utils.topojson.geometry(
+                        geometry, arcs, scale, trans
+                    )),
                 },
             )

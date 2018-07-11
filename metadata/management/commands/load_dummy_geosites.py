@@ -4,7 +4,9 @@ from metadata.models import (
     Gaupalika,
     GeoSite,
 )
+from utils.geo import get_random_point
 
+import json
 import random
 import uuid
 
@@ -91,5 +93,13 @@ class Command(BaseCommand):
         for attr in attrs:
             choice = random.choice(getattr(self, attr))
             setattr(geo_site, attr, choice)
+
+        try:
+            gaupalika = geo_site.gaupalika
+            pt = get_random_point(json.loads(gaupalika.geojson))
+            gaupalika.longitude = pt.x
+            gaupalika.latitude = pt.y
+        except Exception:
+            pass
 
         geo_site.save()
