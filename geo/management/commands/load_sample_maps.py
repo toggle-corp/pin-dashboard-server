@@ -13,11 +13,11 @@ class Command(BaseCommand):
         map_data = [{
             'key': 'districts',
             'filename': 'districts.json',
-            'default_object': 'districts',
+            'default_object': 'collection',
         }, {
             'key': 'gaupalikas',
             'filename': 'gaupalikas.json',
-            'default_object': 'gaupalikas',
+            'default_object': 'collection',
         }]
 
         for info in map_data:
