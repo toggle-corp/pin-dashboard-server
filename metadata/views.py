@@ -161,7 +161,7 @@ class Metadata:
 class MetadataView(views.APIView):
     def get(self, request, district=None):
         if district:
-            district = get_object_or_404(District, code__iexact=district)
+            district = get_object_or_404(District, name__iexact=district)
             metadata = Metadata(district)
             serializer = DistrictDetailSerializer(metadata)
         else:

@@ -42,7 +42,7 @@ class Cat3PointSerializer(CatPointSerializer):
 
 
 class GaupalikaSerializer(BaseMetadataSerializer):
-    gaupalika = serializers.CharField(source='gaupalika.code')
+    gaupalika = serializers.CharField(source='gaupalika.name')
     cat2_points = Cat2PointSerializer(many=True)
     cat3_points = Cat3PointSerializer(many=True)
 
@@ -56,7 +56,7 @@ class DistrictDetailSerializer(BaseMetadataSerializer):
 
 
 class DistrictSerializer(BaseMetadataSerializer):
-    district = serializers.CharField(source='district.code')
+    district = serializers.CharField(source='district.name')
 
 
 class CountrySerializer(BaseMetadataSerializer):

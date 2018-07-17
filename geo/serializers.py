@@ -9,7 +9,7 @@ class MapSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Map
-        fields = ('key', 'json', 'default_object')
+        fields = ('key', 'json')
 
     def get_json(self, map):
         if not map.file:

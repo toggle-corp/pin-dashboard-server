@@ -13,11 +13,9 @@ class Command(BaseCommand):
         map_data = [{
             'key': 'districts',
             'filename': 'districts.json',
-            'default_object': 'collection',
         }, {
             'key': 'gaupalikas',
             'filename': 'gaupalikas.json',
-            'default_object': 'collection',
         }]
 
         for info in map_data:
@@ -26,8 +24,5 @@ class Command(BaseCommand):
 
             file = open(os.path.join(directory, info['filename']), 'r')
             django_file = File(file)
-            map = Map.objects.create(
-                key=info['key'],
-                default_object=info['default_object'],
-            )
+            map = Map.objects.create(key=info['key'])
             map.file.save(info['filename'], django_file, save=True)

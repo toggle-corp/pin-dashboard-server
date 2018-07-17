@@ -24,17 +24,15 @@ class Command(BaseCommand):
         scale = topojson['transform']['scale']
         trans = topojson['transform']['translate']
         arcs = topojson['arcs']
-        geometries = topojson['objects'][map.default_object]['geometries']
+        geometries = list(topojson['objects'].values())[0]['geometries']
 
         for geometry in geometries:
             properties = geometry['properties']
-            code = properties['district']
-            name = properties['district'].capitalize()
+            name = properties['DISTRICT'].capitalize()
 
             District.objects.update_or_create(
-                code=code,
+                name=name,
                 defaults={
-                    'name': name,
                     'geojson': utils.topojson.geometry(
                         geometry, arcs, scale, trans
                     ),
@@ -50,12 +48,12 @@ class Command(BaseCommand):
         scale = topojson['transform']['scale']
         trans = topojson['transform']['translate']
         arcs = topojson['arcs']
-        geometries = topojson['objects'][map.default_object]['geometries']
+        geometries = list(topojson['objects'].values())[0]['geometries']
 
         for geometry in geometries:
             properties = geometry['properties']
-            name = properties['NAME']
-            district_name = properties['DISTRICT']
+            name = properties['FIRST_GaPa'].capitalize()
+            district_name = properties['FIRST_DIST'].capitalize()
 
             if not name or not district_name:
                 continue
@@ -70,9 +68,8 @@ class Command(BaseCommand):
                 continue
 
             Gaupalika.objects.update_or_create(
-                code=name,
+                name=name,
                 defaults={
-                    'name': name,
                     'district': district,
                     'geojson': json.dumps(utils.topojson.geometry(
                         geometry, arcs, scale, trans

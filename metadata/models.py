@@ -2,9 +2,7 @@ from django.db import models
 
 
 class District(models.Model):
-    code = models.CharField(max_length=128, unique=True)
     name = models.CharField(max_length=256)
-
     geojson = models.TextField(blank=True)
 
     def __str__(self):
@@ -12,11 +10,9 @@ class District(models.Model):
 
 
 class Gaupalika(models.Model):
-    code = models.CharField(max_length=128, unique=True)
     name = models.CharField(max_length=256)
     district = models.ForeignKey(District,
                                  on_delete=models.CASCADE)
-
     geojson = models.TextField(blank=True)
 
     def __str__(self):
@@ -24,7 +20,6 @@ class Gaupalika(models.Model):
 
 
 class Place(models.Model):
-    code = models.CharField(max_length=128, unique=True)
     name = models.CharField(max_length=256)
 
     def __str__(self):
@@ -32,7 +27,6 @@ class Place(models.Model):
 
 
 class Ward(models.Model):
-    code = models.CharField(max_length=128, unique=True)
     name = models.CharField(max_length=256)
 
     def __str__(self):
