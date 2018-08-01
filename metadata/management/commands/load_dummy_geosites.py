@@ -16,9 +16,12 @@ class Command(BaseCommand):
 
     # Choices for fields of geosites
     category = ['CAT1', 'CAT2', 'CAT3']
-    risk_rating = [
-        'Severe', 'Highly Critical', 'Critical',
-        'Moderate', 'Minor',
+    risk_score = [
+        '625-501',
+        '500-401',
+        '400-301',
+        '300-201',
+        '200 - below',
     ]
     high_risk_of = [
         'Major failure', 'Substantial deep-seated failure',
@@ -39,7 +42,7 @@ class Command(BaseCommand):
         'Minor damage',
         'Little or no effect',
     ]
-    probability_of_risk = [
+    risk_probability = [
         'Almost certain',
         'Very likely',
         'Likely',
@@ -50,6 +53,7 @@ class Command(BaseCommand):
         'PIN',
         'Government',
         'Name of agency',
+        'N/A',
     ]
     status = ['Pending', 'Completed']
 
@@ -81,11 +85,11 @@ class Command(BaseCommand):
             'district',
             'gaupalika',
             'category',
-            'risk_rating',
+            'risk_score',
             'high_risk_of',
             'direct_risk_for',
             'potential_impact',
-            'probability_of_risk',
+            'risk_probability',
             'mitigation_work_by',
             'status'
         ]

@@ -33,18 +33,18 @@ class CatPoint:
 
         self.households = geosite.household_set.all()
         self.hh_affected = self.households.count()
-        self.risk_rating = geosite.risk_rating
+        self.risk_score = geosite.risk_score
         self.high_risk_of = geosite.high_risk_of
         self.direct_risk_for = geosite.direct_risk_for
         self.potential_impact = geosite.potential_impact
-        self.risk_probability = geosite.probability_of_risk
+        self.risk_probability = geosite.risk_probability
 
 
 class Cat2Point(CatPoint):
     def __init__(self, geosite):
         super().__init__(geosite)
         self.mitigation_work_status = geosite.status
-        self.mitigation_work_by = geosite.mitigation_work_by
+        self.mitigation_work_by = geosite.mitigation_work_by or 'N/A'
 
 
 class Cat3Point(CatPoint):
@@ -52,8 +52,6 @@ class Cat3Point(CatPoint):
         super().__init__(geosite)
         self.eligible_households = self.households\
             .filter(eligibility='Yes').count()
-        self.households_applied = self.households\
-            .filter(application='Applied').count()
         self.households_relocated = self.households\
             .filter(result='Relocated').count()
 
@@ -80,9 +78,9 @@ class Metadata:
             self.gs.annotate(name=models.F('category')),
         )
 
-    def landslides_risk_rating(self):
+    def landslides_risk_score(self):
         return get_counts(
-            self.gs.annotate(name=models.F('risk_rating')),
+            self.gs.annotate(name=models.F('risk_score')),
         )
 
     def land_purchased(self):
@@ -94,15 +92,6 @@ class Metadata:
         hh = self.hh.filter(eligibility_source='Geohazard')
         return {
             'Eligible': hh.filter(eligibility='Yes').count(),
-            'Applied': hh.filter(application='Applied').count(),
-            'Relocated': hh.filter(result='Relocated').count(),
-        }
-
-    def landless(self):
-        hh = self.hh.filter(eligibility_source='Landless')
-        return {
-            'Eligible': hh.filter(eligibility='Yes').count(),
-            'Applied': hh.filter(application='Applied').count(),
             'Relocated': hh.filter(result='Relocated').count(),
         }
 

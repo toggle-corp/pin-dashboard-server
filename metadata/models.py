@@ -53,11 +53,11 @@ class GeoSite(models.Model):
                              on_delete=models.SET_NULL)
 
     category = models.CharField(max_length=256, blank=True)
-    risk_rating = models.CharField(max_length=256, blank=True)
+    risk_score = models.CharField(max_length=256, blank=True)
     high_risk_of = models.CharField(max_length=256, blank=True)
     direct_risk_for = models.CharField(max_length=256, blank=True)
     potential_impact = models.CharField(max_length=256, blank=True)
-    probability_of_risk = models.CharField(max_length=256, blank=True)
+    risk_probability = models.CharField(max_length=256, blank=True)
 
     mitigation_work_by = models.CharField(max_length=256, blank=True)
     status = models.CharField(max_length=256, blank=True)

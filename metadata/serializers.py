@@ -4,11 +4,10 @@ from dashboard.serializers import ListToDictField
 
 class BaseMetadataSerializer(serializers.Serializer):
     landslides_surveyed = serializers.DictField(serializers.IntegerField)
-    landslides_risk_rating = serializers.DictField(serializers.IntegerField)
+    landslides_risk_score = serializers.DictField(serializers.IntegerField)
 
     land_purchased = serializers.FloatField()
     geohazard_affected = serializers.DictField(serializers.IntegerField)
-    landless = serializers.DictField(serializers.IntegerField)
 
     people_relocated = serializers.DictField(serializers.IntegerField)
     total_households = serializers.IntegerField()
@@ -23,7 +22,7 @@ class CatPointSerializer(serializers.Serializer):
     gp_name = serializers.CharField()
 
     hh_affected = serializers.IntegerField()
-    risk_rating = serializers.CharField()
+    risk_score = serializers.CharField()
     high_risk_of = serializers.CharField()
     direct_risk_for = serializers.CharField()
     potential_impact = serializers.CharField()
@@ -37,7 +36,6 @@ class Cat2PointSerializer(CatPointSerializer):
 
 class Cat3PointSerializer(CatPointSerializer):
     eligible_households = serializers.IntegerField()
-    households_applied = serializers.IntegerField()
     households_relocated = serializers.IntegerField()
 
 
