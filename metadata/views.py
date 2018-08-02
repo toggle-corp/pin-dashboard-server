@@ -97,21 +97,23 @@ class Metadata:
 
     def people_relocated(self):
         return {
-            'total': self.hh.aggregate(total=models.Sum(
-                models.F('total_male') + models.F('total_female')
-            ))['total'] or 0,
             'male': self.hh.aggregate(total=models.Sum(
                 models.F('total_male')
             ))['total'] or 0,
             'female': self.hh.aggregate(total=models.Sum(
                 models.F('total_female')
             ))['total'] or 0,
-            'children': self.hh.aggregate(total=models.Sum(
-                models.F('men_0_5') + models.F('women_0_5') +
-                models.F('men_6_18') + models.F('women_6_18')
+            'children_male': self.hh.aggregate(total=models.Sum(
+                models.F('men_0_5') + models.F('men_6_18')
             ))['total'] or 0,
-            'elderly': self.hh.aggregate(total=models.Sum(
-                models.F('men_60_plus') + models.F('women_60_plus')
+            'children_female': self.hh.aggregate(total=models.Sum(
+                models.F('women_0_5') + models.F('women_6_18')
+            ))['total'] or 0,
+            'elderly_male': self.hh.aggregate(total=models.Sum(
+                models.F('men_60_plus')
+            ))['total'] or 0,
+            'elderly_female': self.hh.aggregate(total=models.Sum(
+                models.F('men_60_plus')
             ))['total'] or 0,
         }
 
