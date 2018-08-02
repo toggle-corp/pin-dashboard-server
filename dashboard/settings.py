@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'geo',
     'metadata',
+    'fieldsight',
 ]
 
 MIDDLEWARE = [
