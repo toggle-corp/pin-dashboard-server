@@ -1,7 +1,9 @@
 import requests
 import os
 import re
+from datetime import datetime
 
+from django.conf import settings
 from fieldsight.models import Project
 from metadata.models import (
     Gaupalika,
@@ -14,7 +16,7 @@ from metadata.models import (
 
 
 try:
-    with open('.env') as f:
+    with open(os.path.join(settings.BASE_DIR, '.env')) as f:
         content = f.read()
 except IOError:
     content = ''
@@ -80,9 +82,9 @@ class Loader:
         'Women_Age_60_Plus': 'women_60_plus',
     }
 
-    def fetch_geosites(self):
-        url = '{}/geosites'.format(self.api)
-        project = Project.objects.get_or_create(key='geosites')
+    def fetch_data(self, key):
+        url = '{}/{}'.format(self.api, key)
+        project, _ = Project.objects.get_or_create(key='key')
 
         params = {}
         if project.last_updated_at:
@@ -91,13 +93,16 @@ class Loader:
         r = requests.get(url, params=params, headers=self.headers)
         response = r.json()
 
-        project.last_updated_at = response['timestamp']
+        project.last_updated_at = int(response['timestamp'])
         project.save()
 
         if not response.get('updated'):
-            return
+            return []
 
-        data = response['data']
+        return response['data']
+
+    def fetch_geosites(self):
+        data = self.fetch_data('geosites')
         for datum in data:
             try:
                 self.load_geosite(datum)
@@ -106,23 +111,7 @@ class Loader:
                 pass
 
     def fetch_households(self):
-        url = '{}/hh_registry'.format(self.api)
-        project = Project.objects.get_or_create(key='hh_registry')
-
-        params = {}
-        if project.last_updated_at:
-            params['last_timestamp'] = project.last_updated_at
-
-        r = requests.get(url, params=params, headers=self.headers)
-        response = r.json()
-
-        project.last_updated_at = response['timestamp']
-        project.save()
-
-        if not response.get('updated'):
-            return
-
-        data = response['data']
+        data = self.fetch_data('hh_registry')
         for datum in data:
             try:
                 self.load_household(datum)
