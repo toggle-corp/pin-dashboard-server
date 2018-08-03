@@ -30,6 +30,7 @@ class CatPoint:
         self.landslide_code = geosite.code
         self.landslide_cat = geosite.category
         self.gp_name = geosite.gaupalika.name
+        self.place = geosite.place
 
         self.households = geosite.household_set.all()
         self.hh_affected = self.households.count()

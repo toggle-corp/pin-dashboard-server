@@ -19,20 +19,6 @@ class Gaupalika(models.Model):
         return self.name
 
 
-class Place(models.Model):
-    name = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.name
-
-
-class Ward(models.Model):
-    name = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.name
-
-
 class GeoSite(models.Model):
     code = models.CharField(max_length=128, unique=True)
 
@@ -45,12 +31,8 @@ class GeoSite(models.Model):
     gaupalika = models.ForeignKey(Gaupalika,
                                   default=None, blank=True, null=True,
                                   on_delete=models.SET_NULL)
-    place = models.ForeignKey(Place,
-                              default=None, blank=True, null=True,
-                              on_delete=models.SET_NULL)
-    ward = models.ForeignKey(Ward,
-                             default=None, blank=True, null=True,
-                             on_delete=models.SET_NULL)
+    place = models.CharField(max_length=256, blank=True)
+    ward = models.CharField(max_length=256, blank=True)
 
     category = models.CharField(max_length=256, blank=True)
     risk_score = models.CharField(max_length=256, blank=True)
@@ -78,12 +60,8 @@ class Household(models.Model):
     gaupalika = models.ForeignKey(Gaupalika,
                                   default=None, blank=True, null=True,
                                   on_delete=models.SET_NULL)
-    place = models.ForeignKey(Place,
-                              default=None, blank=True, null=True,
-                              on_delete=models.SET_NULL)
-    ward = models.ForeignKey(Ward,
-                             default=None, blank=True, null=True,
-                             on_delete=models.SET_NULL)
+    place = models.CharField(max_length=256, blank=True)
+    ward = models.CharField(max_length=256, blank=True)
 
     land_size = models.FloatField(default=None, blank=True, null=True)
     eligibility_source = models.CharField(max_length=256, blank=True)

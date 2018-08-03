@@ -97,6 +97,7 @@ class Command(BaseCommand):
         for attr in attrs:
             choice = random.choice(getattr(self, attr))
             setattr(geo_site, attr, choice)
+        geo_site.place = 'Place {}'.format(uuid.uuid4().hex[:2].upper())
 
         try:
             gaupalika = geo_site.gaupalika

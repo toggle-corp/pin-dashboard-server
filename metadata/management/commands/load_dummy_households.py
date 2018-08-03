@@ -77,5 +77,6 @@ class Command(BaseCommand):
         for attr in attrs:
             choice = random.randint(50, 250)
             setattr(household, attr, choice)
+        household.place = 'Place {}'.format(uuid.uuid4().hex[:2].upper())
 
         household.save()

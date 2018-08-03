@@ -62,6 +62,8 @@ class Loader:
         'Risk_Probability': 'risk_probability',
         'Mitigation_work_by': 'mitigation_work_by',
         'Status': 'status',
+        'Name_of_place': 'place',
+        'Ward': 'ward',
     }
 
     household_map = {
@@ -166,12 +168,6 @@ class Loader:
         defaults['gaupalika'], _ = Gaupalika.objects.get_or_create(
             name=get_attr(datum, 'Gaupalika'),
             defaults={'district': defaults['district']}
-        )
-        defaults['place'], _ = Place.objects.get_or_create(
-            name=get_attr(datum, 'Name_of_place')
-        )
-        defaults['ward'], _ = Ward.objects.get_or_create(
-            name=get_attr(datum, 'Ward')
         )
 
         household, _ = Household.objects.update_or_create(

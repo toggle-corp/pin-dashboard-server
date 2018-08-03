@@ -20,6 +20,7 @@ class CatPointSerializer(serializers.Serializer):
     landslide_code = serializers.CharField()
     landslide_cat = serializers.CharField()
     gp_name = serializers.CharField()
+    place = serializers.CharField()
 
     hh_affected = serializers.IntegerField()
     risk_score = serializers.CharField()
