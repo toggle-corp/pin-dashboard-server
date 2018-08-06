@@ -174,8 +174,6 @@ class Loader:
         geosite = GeoSite.objects.filter(
             code=get_attr(datum, 'Geohazard_Code')
         ).first()
-        if not geosite:
-            return
 
         defaults = {}
         for key, value in self.household_map.items():
@@ -188,13 +186,17 @@ class Loader:
                     defaults[value] = function(defaults[value])
 
         defaults['geosite'] = geosite
-        defaults['district'], _ = District.objects.get_or_create(
-            name=get_attr(datum, 'District')
-        )
-        defaults['gaupalika'], _ = Gaupalika.objects.get_or_create(
-            name=get_attr(datum, 'Gaupalika_Municipality'),
-            defaults={'district': defaults['district']}
-        )
+
+        try:
+            defaults['district'], _ = District.objects.get_or_create(
+                name=get_attr(datum, 'District_of_origin')
+            )
+            defaults['gaupalika'], _ = Gaupalika.objects.get_or_create(
+                name=get_attr(datum, 'Gaupalika_Municipality'),
+                defaults={'district': defaults['district']}
+            )
+        except Exception:
+            pass
 
         household, _ = Household.objects.update_or_create(
             code=code,

@@ -96,26 +96,29 @@ class Metadata:
         return {
             'Eligible': hh.filter(eligibility__contains='Yes').count(),
             'Relocated': hh.filter(result__contains='Relocated').count(),
+            'Total': hh.count(),
         }
 
     def people_relocated(self):
+        hh = self.hh.filter(eligibility_source='Geohazard')
+        hh = hh.filter(result__contains='Relocated')
         return {
-            'male': self.hh.aggregate(total=models.Sum(
+            'male': hh.aggregate(total=models.Sum(
                 models.F('total_male')
             ))['total'] or 0,
-            'female': self.hh.aggregate(total=models.Sum(
+            'female': hh.aggregate(total=models.Sum(
                 models.F('total_female')
             ))['total'] or 0,
-            'children_male': self.hh.aggregate(total=models.Sum(
+            'children_male': hh.aggregate(total=models.Sum(
                 models.F('men_0_5') + models.F('men_6_18')
             ))['total'] or 0,
-            'children_female': self.hh.aggregate(total=models.Sum(
+            'children_female': hh.aggregate(total=models.Sum(
                 models.F('women_0_5') + models.F('women_6_18')
             ))['total'] or 0,
-            'elderly_male': self.hh.aggregate(total=models.Sum(
+            'elderly_male': hh.aggregate(total=models.Sum(
                 models.F('men_60_plus')
             ))['total'] or 0,
-            'elderly_female': self.hh.aggregate(total=models.Sum(
+            'elderly_female': hh.aggregate(total=models.Sum(
                 models.F('women_60_plus')
             ))['total'] or 0,
         }
@@ -133,7 +136,9 @@ class Metadata:
         ]
 
     def total_households(self):
-        return self.hh.count()
+        hh = self.hh.filter(eligibility_source='Geohazard')
+        hh = hh.filter(result__contains='Relocated')
+        return hh.count()
 
     def cat2_points(self):
         return [
