@@ -1,5 +1,8 @@
 #!/bin/bash -x
 
+crontab /code/cronjobs
+service cron start
+
 . /venv/bin/activate
 pip3 install -r requirements.txt
 python3 manage.py migrate --no-input

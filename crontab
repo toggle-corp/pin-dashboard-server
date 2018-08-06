@@ -1,3 +1,0 @@
-SHELL=/bin/bash
-
-30 * * * * chmod +x /home/code/fetch_from_fieldsight.sh; /home/code/fetch_from_fieldsight.sh
