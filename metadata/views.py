@@ -52,9 +52,9 @@ class Cat3Point(CatPoint):
     def __init__(self, geosite):
         super().__init__(geosite)
         self.eligible_households = self.households\
-            .filter(eligibility='Yes').count()
+            .filter(eligibility__contains='Yes').count()
         self.households_relocated = self.households\
-            .filter(result='Relocated').count()
+            .filter(result__contains='Relocated').count()
 
 
 class Metadata:
@@ -92,8 +92,8 @@ class Metadata:
     def geohazard_affected(self):
         hh = self.hh.filter(eligibility_source='Geohazard')
         return {
-            'Eligible': hh.filter(eligibility='Yes').count(),
-            'Relocated': hh.filter(result='Relocated').count(),
+            'Eligible': hh.filter(eligibility__contains='Yes').count(),
+            'Relocated': hh.filter(result__contains='Relocated').count(),
         }
 
     def people_relocated(self):
@@ -114,7 +114,7 @@ class Metadata:
                 models.F('men_60_plus')
             ))['total'] or 0,
             'elderly_female': self.hh.aggregate(total=models.Sum(
-                models.F('men_60_plus')
+                models.F('women_60_plus')
             ))['total'] or 0,
         }
 

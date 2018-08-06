@@ -1,15 +1,12 @@
 import requests
 import os
 import re
-from datetime import datetime
 
 from django.conf import settings
 from fieldsight.models import Project
 from metadata.models import (
     Gaupalika,
     District,
-    Place,
-    Ward,
     GeoSite,
     Household,
 )
@@ -45,6 +42,18 @@ def get_attr(datum, key):
         return datum['attributes'].get(key)
 
 
+def parse_number(text):
+    matches = re.findall(r'\d+\.\d+', text)
+    if len(matches) > 0:
+        return matches[0] or 0
+    return None
+
+
+def parse_land_area(text):
+    number = parse_number(text)
+    return number and float(number) * 10000
+
+
 class Loader:
     api = '{}/fieldsight/api/remote'.format(get_env('FS_URL'))
     headers = {
@@ -54,7 +63,6 @@ class Loader:
     }
 
     geosite_map = {
-        'Category': 'category',
         'Risk_Score': 'risk_score',
         'High_risk_of_': 'high_risk_of',
         'Direct_risk_for': 'direct_risk_for',
@@ -84,13 +92,30 @@ class Loader:
         'Women_Age_60_Plus': 'women_60_plus',
     }
 
+    household_parse_functions = {
+        'Land_size_allocated_to_HH': parse_land_area,
+    }
+
+    household_defaults = {
+        'Total_Male': 0,
+        'Total_Female': 0,
+        'Men_Age_0_5': 0,
+        'Men_Age_6_18': 0,
+        'Men_Age_19_60': 0,
+        'Men_Age_60_Plus': 0,
+        'Women_Age_0_5': 0,
+        'Women_Age_6_18': 0,
+        'Women_Age_19_60': 0,
+        'Women_Age_60_Plus': 0,
+    }
+
     def fetch_data(self, key):
         url = '{}/{}'.format(self.api, key)
         project, _ = Project.objects.get_or_create(key='key')
 
         params = {}
-        if project.last_updated_at:
-            params['last_timestamp'] = project.last_updated_at
+        # if project.last_updated_at:
+        #     params['last_timestamp'] = project.last_updated_at
 
         r = requests.get(url, params=params, headers=self.headers)
         response = r.json()
@@ -109,7 +134,6 @@ class Loader:
             try:
                 self.load_geosite(datum)
             except Exception:
-                # TODO Log Error
                 pass
 
     def fetch_households(self):
@@ -118,7 +142,6 @@ class Loader:
             try:
                 self.load_household(datum)
             except Exception:
-                # TODO Log Error
                 pass
 
     def load_geosite(self, datum):
@@ -127,9 +150,10 @@ class Loader:
         for key, value in self.geosite_map.items():
             defaults[value] = get_attr(datum, key)
 
-        defaults['latitude'] = datum.get('latitude') or \
+        defaults['category'] = 'CAT{}'.format(get_attr(datum, 'Category'))
+        defaults['latitude'] = get_attr(datum, 'latitude') or \
             datum['location'][1]
-        defaults['longitude'] = datum.get('longitude') or \
+        defaults['longitude'] = get_attr(datum, 'longitude') or \
             datum['location'][0]
 
         defaults['district'], _ = District.objects.get_or_create(
@@ -139,12 +163,6 @@ class Loader:
             name=get_attr(datum, 'Gaupalika'),
             defaults={'district': defaults['district']}
         )
-        defaults['place'], _ = Place.objects.get_or_create(
-            name=get_attr(datum, 'Name_of_place')
-        )
-        defaults['ward'], _ = Ward.objects.get_or_create(
-            name=get_attr(datum, 'Ward')
-        )
 
         geosite, _ = GeoSite.objects.update_or_create(
             code=code,
@@ -153,20 +171,28 @@ class Loader:
 
     def load_household(self, datum):
         code = get_attr(datum, 'DS_II_HH_Code')
-        geosite = GeoSite.objects.get(code=get_attr(datum, 'Geohazard_Code'))
+        geosite = GeoSite.objects.filter(
+            code=get_attr(datum, 'Geohazard_Code')
+        ).first()
         if not geosite:
             return
 
         defaults = {}
         for key, value in self.household_map.items():
             defaults[value] = get_attr(datum, key)
+            if not defaults[value]:
+                defaults[value] = self.household_defaults.get(key)
+            else:
+                function = self.household_parse_functions.get(key)
+                if function:
+                    defaults[value] = function(defaults[value])
 
         defaults['geosite'] = geosite
         defaults['district'], _ = District.objects.get_or_create(
             name=get_attr(datum, 'District')
         )
         defaults['gaupalika'], _ = Gaupalika.objects.get_or_create(
-            name=get_attr(datum, 'Gaupalika'),
+            name=get_attr(datum, 'Gaupalika_Municipality'),
             defaults={'district': defaults['district']}
         )
 
