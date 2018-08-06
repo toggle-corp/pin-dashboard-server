@@ -11,6 +11,8 @@ from .models import (
     District, Gaupalika,
 )
 
+from fieldsight.loader import Loader
+
 
 def get_counts(qs):
     count_list = qs.values('name').annotate(count=models.Count('name'))
@@ -152,6 +154,10 @@ class Metadata:
 
 class MetadataView(views.APIView):
     def get(self, request, district=None):
+        loader = Loader()
+        loader.fetch_geosites()
+        loader.fetch_households()
+
         if district:
             district = get_object_or_404(District, name__iexact=district)
             metadata = Metadata(district)

@@ -114,8 +114,8 @@ class Loader:
         project, _ = Project.objects.get_or_create(key='key')
 
         params = {}
-        # if project.last_updated_at:
-        #     params['last_timestamp'] = project.last_updated_at
+        if project.last_updated_at:
+            params['last_timestamp'] = project.last_updated_at
 
         r = requests.get(url, params=params, headers=self.headers)
         response = r.json()
