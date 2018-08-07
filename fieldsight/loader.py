@@ -64,7 +64,7 @@ class Loader:
 
     geosite_map = {
         'Risk_Score': 'risk_score',
-        'High_risk_of_': 'high_risk_of',
+        'High_risk_of': 'high_risk_of',
         'Direct_risk_for': 'direct_risk_for',
         'Potential_impact': 'potential_impact',
         'Risk_Probability': 'risk_probability',
