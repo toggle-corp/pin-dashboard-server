@@ -144,7 +144,7 @@ class Metadata:
         return [
             Cat2Point(gs)
             for gs
-            in GeoSite.objects.filter(gaupalika=self.gaupalika,
+            in GeoSite.objects.filter(district=self.district,
                                       category__iexact='cat2')
         ]
 
@@ -152,7 +152,7 @@ class Metadata:
         return [
             Cat3Point(gs)
             for gs
-            in GeoSite.objects.filter(gaupalika=self.gaupalika,
+            in GeoSite.objects.filter(district=self.district,
                                       category__iexact='cat3')
         ]
 
@@ -160,8 +160,12 @@ class Metadata:
 class MetadataView(views.APIView):
     def get(self, request, district=None):
         loader = Loader()
-        loader.fetch_geosites()
-        loader.fetch_households()
+
+        try:
+            loader.fetch_geosites()
+            loader.fetch_households()
+        except Exception:
+            pass
 
         if district:
             district = get_object_or_404(District, name__iexact=district)

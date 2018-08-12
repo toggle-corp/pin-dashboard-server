@@ -42,12 +42,12 @@ class Cat3PointSerializer(CatPointSerializer):
 
 class GaupalikaSerializer(BaseMetadataSerializer):
     gaupalika = serializers.CharField(source='gaupalika.name')
-    cat2_points = Cat2PointSerializer(many=True)
-    cat3_points = Cat3PointSerializer(many=True)
 
 
 class DistrictDetailSerializer(BaseMetadataSerializer):
     district = serializers.CharField()
+    cat2_points = Cat2PointSerializer(many=True)
+    cat3_points = Cat3PointSerializer(many=True)
     gaupalikas = ListToDictField(
         child=GaupalikaSerializer(many=True),
         key='gaupalika',
