@@ -144,7 +144,7 @@ class Metadata:
         return [
             Cat2Point(gs)
             for gs
-            in GeoSite.objects.filter(district=self.district,
+            in GeoSite.objects.filter(gaupalika__district=self.district,
                                       category__iexact='cat2')
         ]
 
@@ -152,7 +152,7 @@ class Metadata:
         return [
             Cat3Point(gs)
             for gs
-            in GeoSite.objects.filter(district=self.district,
+            in GeoSite.objects.filter(gaupalika__district=self.district,
                                       category__iexact='cat3')
         ]
 
