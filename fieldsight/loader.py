@@ -109,12 +109,12 @@ class Loader:
         'Women_Age_60_Plus': 0,
     }
 
-    def fetch_data(self, key):
+    def fetch_data(self, key, force=False):
         url = '{}/{}'.format(self.api, key)
         project, _ = Project.objects.get_or_create(key='key')
 
         params = {}
-        if project.last_updated_at:
+        if not force and project.last_updated_at:
             params['last_timestamp'] = project.last_updated_at
 
         r = requests.get(url, params=params, headers=self.headers)
@@ -128,16 +128,16 @@ class Loader:
 
         return response['data']
 
-    def fetch_geosites(self):
-        data = self.fetch_data('geosites')
+    def fetch_geosites(self, force=False):
+        data = self.fetch_data('geosites', force)
         for datum in data:
             try:
                 self.load_geosite(datum)
             except Exception:
                 pass
 
-    def fetch_households(self):
-        data = self.fetch_data('hh_registry')
+    def fetch_households(self, force=False):
+        data = self.fetch_data('hh_registry', force)
         for datum in data:
             try:
                 self.load_household(datum)
