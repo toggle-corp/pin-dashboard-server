@@ -1,10 +1,11 @@
 version: '3.2'
 
 services:
-    server:
-        build: .
-        command: bash -c '/code/scripts/run_develop.sh'
-        volumes:
-            - .:/code
-        ports:
-            - '8000:8000'
+  server:
+    image: devtc/pin-dashboard-server:develop
+    build: .
+    command: bash -c '/code/scripts/run_develop.sh'
+    volumes:
+      - .:/code
+    ports:
+      - '8000:8000'
