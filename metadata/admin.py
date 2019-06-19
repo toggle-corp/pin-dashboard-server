@@ -7,7 +7,6 @@ from .models import (
 [
     admin.site.register(Model) for Model in
     [
-        District, Gaupalika,
-        GeoSite, Household,
+        District, Gaupalika, GeoSite, Household,
     ]
 ]
